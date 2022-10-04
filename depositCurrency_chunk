@@ -1,0 +1,73 @@
+<p>Курси для депозитів</p>
+<div id="cashList" class="rates-list"  style="display:none;">
+                    <h5>Для розміщення на депозит ви можете придбати валюту за такими курсами</h5>
+                    <table class="styled-table">
+                        <thead>
+                        <tr>
+                            <th>[%Код%]</th>
+                            <th>[%Валюта%]</th>
+                            <th>[%Купівля%]</th>
+                            <th>[%НБУ%]<sup>*</sup></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+							<tr><td>USD</td><td>Долари США</td><td id="usdDepoCurrensy"></td><td id="usdNbuCurrensy"></td></tr>
+							<tr><td>EUR</td><td>Євро</td><td id="eurDepoCurrensy"></td><td id="eurNbuCurrensy"></td></tr>
+							<!-- <tr><td>GBP</td><td>Англ.фунт стерлiнгів</td><td></td><td></td></tr>
+							<tr><td>CHF</td><td>Швейцарськi франки</td><td></td><td></td></tr> -->
+                        </tbody>
+                    </table>
+                    <div class="nbu-text"></div>
+                </div>
+<script>
+	const refCurrrensyBlock = document.querySelector('.rates-list')
+	const refUsdDepoCurrrensy = document.querySelector('#usdDepoCurrensy')
+	const refEurDepoCurrrensy = document.querySelector('#eurDepoCurrensy')
+	const refUsdNbuCurrrensy = document.querySelector('#usdNbuCurrensy')
+	const refEurNbuCurrrensy = document.querySelector('#eurNbuCurrensy')
+	const refNbuText = document.querySelector('.nbu-text')
+
+	// console.log(refCurrrensyTable);
+
+	const currentDate = new Date();
+	const currentYear = String(currentDate.getFullYear());
+	const currentMonth = String(currentDate.getMonth()+1);
+	const currentDay = String(currentDate.getDate());
+	// console.log(currentDate);
+	// console.log(currentYear);
+	// console.log(currentMonth);
+	// console.log(currentDay);
+
+	function fetchRates() {
+	return fetch(`https://www.eximb.com/services/v1/rates/?day=${currentDay}&month=${currentMonth}&year=${currentYear}&lang=uk`)
+		.then(response => {
+			if (response.ok) {
+				return response.json();
+			}
+			throw new Error(response.statusText);
+		});
+	};
+
+	function strToFloat(str) {
+		return parseFloat(str.replace(',', '.'))
+	};
+
+	try {
+		fetchRates().then((response) => {
+			 if (response.rates.cash.is_nbu) {
+
+				refCurrrensyBlock.style.display = '';
+
+				refUsdDepoCurrrensy.innerHTML = (strToFloat(response.rates.cash.data.filter(row => (row.code === 'USD'))[0].nbu) * 1.1).toFixed(4).toString().replace('.', ',');
+				refEurDepoCurrrensy.innerHTML = (strToFloat(response.rates.cash.data.filter(row => (row.code === 'EUR'))[0].nbu) * 1.1).toFixed(4).toString().replace('.', ',');
+				refUsdNbuCurrrensy.innerHTML = response.rates.cash.data.filter(row => (row.code === 'USD'))[0].nbu;
+				refEurNbuCurrrensy.innerHTML = response.rates.cash.data.filter(row => (row.code === 'EUR'))[0].nbu;
+
+				refNbuText.innerHTML = response.rates.cash.nbu_msg;
+						}
+		});
+	} catch {
+		console.error(Error);
+	};
+	
+</script>
