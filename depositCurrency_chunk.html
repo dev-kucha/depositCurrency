@@ -58,8 +58,8 @@
 
 				refCurrrensyBlock.style.display = '';
 
-				refUsdDepoCurrrensy.innerHTML = (strToFloat(response.rates.cash.data.filter(row => (row.code === 'USD'))[0].nbu) * 1.1).toFixed(4).toString().replace('.', ',');
-				refEurDepoCurrrensy.innerHTML = (strToFloat(response.rates.cash.data.filter(row => (row.code === 'EUR'))[0].nbu) * 1.1).toFixed(4).toString().replace('.', ',');
+				refUsdDepoCurrrensy.innerHTML = (strToFloat(response.rates.cash.data.filter(row => (row.code === 'USD'))[0].nbu) * 1.01).toFixed(4).toString().replace('.', ',');
+				refEurDepoCurrrensy.innerHTML = (strToFloat(response.rates.cash.data.filter(row => (row.code === 'EUR'))[0].nbu) * 1.01).toFixed(4).toString().replace('.', ',');
 				refUsdNbuCurrrensy.innerHTML = response.rates.cash.data.filter(row => (row.code === 'USD'))[0].nbu;
 				refEurNbuCurrrensy.innerHTML = response.rates.cash.data.filter(row => (row.code === 'EUR'))[0].nbu;
 
